@@ -1,7 +1,7 @@
 import socket
 import sys
 
-server_ip = '127.0.0.1'
+server_ip = '192.168.43.242'
 server_port = 3999
 #self_port = 7879
 
