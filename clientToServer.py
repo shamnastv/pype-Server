@@ -1,16 +1,15 @@
 import socket
 import sys
+import Global_variables as G
 
-server_ip = '192.168.43.242'
-server_port = 3999
 #self_port = 7879
 
 class Server():
-	def __init__(self,self_port):
+	def __init__(self):
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.s.bind(('',self_port))
-		self.s.connect((server_ip, server_port))
+		self.s.bind(('',G.self_port))
+		self.s.connect((G.server_ip, G.server_port))
 	def send(self,msg):
 		try :
 	                self.s.send(msg)

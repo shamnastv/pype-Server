@@ -1,16 +1,20 @@
 import sys
 from clientToServer import Server
 from clientToClients import Client
+import Global_variables as G
 
 
 if __name__ == '__main__' :
-    self_port = int(sys.argv[1])
+    G.self_port = int(sys.argv[1])
+    if sys.argc == 4 :
+        G.server_ip = sys.argv[2]
+        G.server_port = int(sys.argv[3])
     clients = []
     while 1 :
         print '1. Connect to Server\n2. Connect to Clients\n3. exit'
         op1 = input('Enter option : ')
         if op1 == 1 :
-            serv=Server(self_port)
+            serv=Server()
 	    while (1) :
                 msg = raw_input('Enter message to send : ')
 	        if msg== 'exit':
@@ -25,7 +29,7 @@ if __name__ == '__main__' :
 	        op = input('Enter option : ')
 	        if op == 1 :
 		    addr = raw_input('Enter address : ')
-		    clients.append(Client(self_port , addr))
+		    clients.append(Client(addr))
                 if op == 2 :
 		    i=0
 		    for c in clients:

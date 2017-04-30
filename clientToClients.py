@@ -1,18 +1,20 @@
 import socket
 import sys
+import time
+import Global_variables as G
 from collections import deque
 
 maxsize=4096
-self_port = 7878
 punchTimeout = 10
 nOfIteration = 10
+waiting_time = 10
 
 class Client() :
-	def __init__(self , self_port , addr):
+	def __init__(self , addr):
 		self.id = addr
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.s.bind(('',self_port))
+		self.s.bind(('',G.self_port))
 		addr = self.stringToTuple(addr)
 		self.s.connect(addr)
 		self.isPunched = False
@@ -56,7 +58,8 @@ class Client() :
 			try :
 				data = self.s.recv(maxsize)
 			except :
-				i=10
+                                time.wait(waiting_time)
+				continue
 			if data == 'punch' :
 				print 'received punch\n'
 				self.send('punched')
@@ -76,14 +79,14 @@ class Client() :
 
 if __name__=="__main__":
 	#if sys.argc==2:
-	self_port=int(sys.argv[1])
+	G.self_port = int(sys.argv[1])
 	clients = []
 	while(1):
 		print '1. New conn\n2. Communicate with client\n3. Exit'
 		op = input('Enter option : ')
 		if op == 1 :
 			addr = raw_input('Enter address : ')
-			clients.append(Client(self_port , addr))
+			clients.append(Client(addr))
 		if op == 2 :
 			i=0
 			for c in clients :
