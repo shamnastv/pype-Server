@@ -22,12 +22,12 @@ class Client() :
 	
 
 	def tupleToString(self, taddr):
-		self.ip, self.port = taddr
-		return self.ip+':'+str(self.port)	
+		ip, port = taddr
+		return ip+':'+str(port)	
 
 	def stringToTuple(self,addr):
-		self.ip, self.port = addr.split(':')
-		return self.ip, int(self.port)
+		ip, port = addr.split(':')
+		return ip, int(port)
 	
 	def send(self,msg):
 		try:
