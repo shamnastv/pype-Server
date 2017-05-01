@@ -3,6 +3,12 @@ import sys
 import time
 import Global_variables as G
 
+initm = 'init'
+pollm = 'poll'
+getconm = 'getcon'
+endm = 'e'
+
+separator = '_'
 
 maxsize=4096
 
@@ -25,8 +31,29 @@ class Server():
 			self.s.send(msg)
 		except socket.error, msg:
 	       		print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
-			sys.exit()			
+			sys.exit()
 
+        def init (self):
+                self.send(initm)
+                msg = self.recv()
+                selfaddr, otheraddr = msg.split(separator)
+                return selfaddr, otheraddr
+
+        def poll(self):
+                self.send(pollm)
+                msg = self.recv()
+                duties = msg.split(separator)
+                if duties[-1] == endm :
+                        del duties[-1]
+                return duties
+
+        def getcon(self, addr):
+                msg = getconm + addr
+                self.send(msg)
+                msg = self.recv()
+                if msg != endm :
+                        self.getcon(addr)
+        
 	def __del__(self):
 		self.s.close()
         

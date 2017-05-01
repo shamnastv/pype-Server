@@ -2,7 +2,6 @@ import socket
 import sys
 import Global_variables as G
 
-#self_port = 7879
 
 class Server():
 	def __init__(self):
