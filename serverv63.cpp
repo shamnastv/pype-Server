@@ -41,7 +41,7 @@ string sockaddrToString(sockaddr_storage sock)
       inet_ntop(sock.ss_family,&(((struct sockaddr_in6*)&sock)->sin6_addr),numeric_addr,sizeof numeric_addr);
       port = ntohs(((struct sockaddr_in6*)&sock)->sin6_port);
     }
-  sprintf(str,"%s:%d",numeric_addr,port);
+  sprintf(str,"%s+%d",numeric_addr,port);
   string s(str);
   return(s);
 }
@@ -86,10 +86,8 @@ void getaddr(int sockfd , sockaddr_storage clien_addr)
 
 void getpeer(int sockfd , sockaddr_storage clien_addr)
 {
-  char buffer[MAX];
   int n;
   string s, s1;
-  bzero(buffer,MAX);
   s=sockaddrToString(clien_addr);
   if(peersn>1||peers[0]!=s)
     {
@@ -176,7 +174,7 @@ int main(int argc,char* argv[])
       split(string(msg),&msg1,&msg2,c);
       if(msg1==GETADDR)
 	getaddr(sockfd,clien_addr);
-      if(msg1==GETPEER)
+      else if(msg1==GETPEER)
 	getpeer(sockfd,clien_addr);
       else if(msg1==POLL)
 	poll(sockfd,clien_addr);
