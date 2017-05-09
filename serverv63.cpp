@@ -21,11 +21,12 @@
 #define POLL "poll"
 #define GETCON "getcon"
 #define END "end"
-#define TEST "t"
 
 using namespace std;
 
 string separator = "_";
+int sockfd;
+
 string sockaddrToString(sockaddr_storage sock)
 {
   char str[50];
@@ -33,8 +34,8 @@ string sockaddrToString(sockaddr_storage sock)
   char numeric_addr[INET6_ADDRSTRLEN];
   if(sock.ss_family == AF_INET)
     {
-       inet_ntop(sock.ss_family,&(((struct sockaddr_in*)&sock)->sin_addr),numeric_addr,sizeof numeric_addr);
-      port = ntohs(((struct sockaddr_in*)&sock)->sin_port);
+      inet_ntop(sock.ss_family,&(((struct sockaddr_in*)&sock)->sin_addr),numeric_addr,sizeof numeric_addr);
+       port = ntohs(((struct sockaddr_in*)&sock)->sin_port);
     }
   else if(sock.ss_family == AF_INET6)
     {
@@ -75,20 +76,22 @@ void addtopeers(string s)
     peersn++;
 }
 
-void getaddr(int sockfd , sockaddr_storage clien_addr)
+void getaddr(sockaddr_storage clien_addr)
 {
   int n;
   string s;
   s=sockaddrToString(clien_addr);
+  cout<<"Received getaddr from "<<s<<endl;
   if((n=sendto(sockfd,s.c_str(),s.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
     perror("sending error");
 }
 
-void getpeer(int sockfd , sockaddr_storage clien_addr)
+void getpeer(sockaddr_storage clien_addr)
 {
   int n;
   string s, s1;
   s=sockaddrToString(clien_addr);
+  cout<<"Received getpeer from "<<s<<endl;
   if(peersn>1||(peersn>0&&peers[0]!=s))
     {
       int i=rand()%peersn;
@@ -102,13 +105,15 @@ void getpeer(int sockfd , sockaddr_storage clien_addr)
     perror("sending error");
   addtopeers(s);
 }
-void poll(int sockfd, sockaddr_storage clien_addr)
+
+void poll(sockaddr_storage clien_addr)
 {
-  char buffer[MAX];
   int n;
   string s, s1="";
   
   s=sockaddrToString(clien_addr);
+  cout<<"Received poll from "<<s<<endl;
+
   map <string, list<string> > :: iterator it1;
   it1 = duties.find(s);
   
@@ -124,13 +129,15 @@ void poll(int sockfd, sockaddr_storage clien_addr)
   s1 += END;
   if((n=sendto(sockfd,s1.c_str(),s1.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
     perror("sending error");
+  cout<<"Sent "<<s1<<" to "<<s<<endl;
 }
 
-void getcon(int sockfd, sockaddr_storage clien_addr, string addr)
+void getcon(sockaddr_storage clien_addr, string addr)
 {
   int n;
   string s, buffer;
   s=sockaddrToString(clien_addr);
+  cout<<"Received getcon from "<<s<<" to "<<addr<<endl;
   duties[addr].push_back(s);
   buffer=END;
   if((n=sendto(sockfd,buffer.c_str(),buffer.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
@@ -139,10 +146,8 @@ void getcon(int sockfd, sockaddr_storage clien_addr, string addr)
 
 int main(int argc,char* argv[])
 {
-  char c = separator[0];
-  cout <<"separartor is "<<c<<endl;
-  int sockfd;
-  int port;
+  const char c = separator[0];
+  unsigned int port;
   int n;
   socklen_t clielen;
   sockaddr_in serv_addr;
@@ -173,15 +178,15 @@ int main(int argc,char* argv[])
       msg[n]='\0';
       split(string(msg),&msg1,&msg2,c);
       if(msg1==GETADDR)
-	getaddr(sockfd,clien_addr);
+	getaddr(clien_addr);
       else if(msg1==GETPEER)
-	getpeer(sockfd,clien_addr);
+	getpeer(clien_addr);
       else if(msg1==POLL)
-	poll(sockfd,clien_addr);
+	poll(clien_addr);
       else if(msg1==GETCON)
-	getcon(sockfd,clien_addr,msg2);
+	getcon(clien_addr,msg2);
       else
-	cout<<msg1<<"\n";
+	cout<<msg<<"\n";
     }
   close(sockfd);
   return 0;
