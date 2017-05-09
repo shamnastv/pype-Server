@@ -59,6 +59,7 @@ class Server():
                 msg = self.recv()
                 if msg != endm :
                         self.getcon(addr)
+                return msg
         
 	def __del__(self):
 		self.s.close()

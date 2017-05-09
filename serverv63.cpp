@@ -128,19 +128,19 @@ void poll(int sockfd, sockaddr_storage clien_addr)
 
 void getcon(int sockfd, sockaddr_storage clien_addr, string addr)
 {
-  char buffer[MAX];
   int n;
-  string s;
+  string s, buffer;
   s=sockaddrToString(clien_addr);
   duties[addr].push_back(s);
-  strcpy(buffer,END);
-  if((n=sendto(sockfd,buffer,strlen(buffer),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
+  buffer=END;
+  if((n=sendto(sockfd,buffer.c_str(),buffer.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
     perror("sending error");  
 }
 
 int main(int argc,char* argv[])
 {
   char c = separator[0];
+  cout <<"separartor is "<<c<<endl;
   int sockfd;
   int port;
   int n;

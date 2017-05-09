@@ -1,12 +1,12 @@
 import sys
-from clientToServer import Server
+from clientToServer_udp2 import Server
 from clientToClients import Client
 import Global_variables as G
 
 
 if __name__ == '__main__' :
     G.self_port = int(sys.argv[1])
-    if sys.argc == 4 :
+    if len(sys.argv) == 4 :
         G.server_ip = sys.argv[2]
         G.server_port = int(sys.argv[3])
     clients = []
@@ -16,12 +16,21 @@ if __name__ == '__main__' :
         if op1 == 1 :
             serv=Server()
 	    while (1) :
-                msg = raw_input('Enter message to send : ')
-	        if msg== 'exit':
-		    break;
-	        serv.send(msg);
-	        data=serv.recv()
-	        print 'Server reply : ' + data
+                print '1. get my address\n2. get first peer\n3. poll\n4. getconnectiOn\n.5 exit'
+                op = input('Enter option : ')
+                print '\nServer reply'
+	        if op == 1:
+	            print serv.getaddr()
+                elif op == 2 :
+                    print serv.getpeer()
+                elif op == 3 :
+                    print serv.poll
+                elif op == 4:
+                    address = raw_input('enter address : ')
+                    print serv.getcon(address)
+                elif op == 5:
+                    break
+                print '\n'
 	    del serv
         if op1 == 2 :
 	    while(1):
