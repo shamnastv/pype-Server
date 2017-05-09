@@ -37,11 +37,11 @@ class Server():
 			sys.exit()
 
         def getaddr (self):
-                self.send(getaddrm)
+                self.s.send(getaddrm)
                 return self.recv()
         
         def getpeer (self):
-                self.send(getpeerm)
+                self.s.send(getpeerm)
                 return self.recv()
 
 
@@ -54,7 +54,7 @@ class Server():
                 return duties
 
         def getcon(self, addr):
-                msg = getconm + addr
+                msg = getconm+ separator + addr
                 self.send(msg)
                 msg = self.recv()
                 if msg != endm :

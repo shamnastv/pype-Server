@@ -3,7 +3,8 @@ import sys
 import time
 import Global_variables as G
 
-initm = 'init'
+getaddrm = 'getaddr'
+getpeerm = 'getpeer'
 pollm = 'poll'
 getconm = 'getcon'
 endm = 'e'
@@ -35,11 +36,14 @@ class Server():
 	       		print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
 			sys.exit()
 
-        def init (self):
-                self.send(initm)
-                msg = self.recv()
-                selfaddr, otheraddr = msg.split(separator)
-                return selfaddr, otheraddr
+        def getaddr (self):
+                self.send(getaddrm)
+                return self.recv()
+        
+        def getpeer (self):
+                self.send(getpeerm)
+                return self.recv()
+
 
         def poll(self):
                 self.send(pollm)
