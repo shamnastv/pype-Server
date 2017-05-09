@@ -89,7 +89,7 @@ void getpeer(int sockfd , sockaddr_storage clien_addr)
   int n;
   string s, s1;
   s=sockaddrToString(clien_addr);
-  if(peersn>1||peers[0]!=s)
+  if(peersn>1||(peersn>0&&peers[0]!=s))
     {
       int i=rand()%peersn;
       if(peers[i]==s)
