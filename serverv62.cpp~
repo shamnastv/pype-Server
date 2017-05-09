@@ -16,7 +16,8 @@
 #define MAX 50
 #define MAX_PEERS 2
 
-#define INIT "init"
+#define GETADDR "getaddr"
+#define GETPEER "getpeer"
 #define POLL "poll"
 #define GETCON "getcon"
 #define END "end"
@@ -65,7 +66,7 @@ void perror(string s)
 
 void addtopeers(string s)
 {
-  for(int i=0;i<peersn;++i)
+  for(i=0;i<peersn;++i)
     if(peers[i]==s)
       return;
   peers[peerstop]=s;
@@ -74,11 +75,20 @@ void addtopeers(string s)
     peersn++;
 }
 
-void init(int sockfd , sockaddr_storage clien_addr)
+void getaddr(int sockfd , sockaddr_storage clien_addr)
+{
+  int n;
+  string s;
+  s=sockaddrToString(clien_addr);
+  if((n=sendto(sockfd,s.c_str(),s.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
+    perror("sending error");
+}
+
+void getpeer(int sockfd , sockaddr_storage clien_addr)
 {
   char buffer[MAX];
   int n;
-  string s, s1, s2;
+  string s, s1;
   bzero(buffer,MAX);
   s=sockaddrToString(clien_addr);
   if(peersn>0)
@@ -94,8 +104,7 @@ void init(int sockfd , sockaddr_storage clien_addr)
     }
   else
     s1 = END;
-  s2 = s+separator+s1;
-  if((n=sendto(sockfd,s2.c_str(),s2.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
+  if((n=sendto(sockfd,s1.c_str(),s1.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
     perror("sending error");
   addtopeers(s);
 }
@@ -169,8 +178,10 @@ int main(int argc,char* argv[])
 	perror("receiving error");
       msg[n]='\0';
       split(string(msg),&msg1,&msg2,c);
-      if(msg1==INIT)
-	init(sockfd,clien_addr);
+      if(msg1==GETADDR)
+	getaddr(sockfd,clien_addr);
+      if(msg1==GETPEER)
+	getpeer(sockfd,clien_addr);
       else if(msg1==POLL)
 	poll(sockfd,clien_addr);
       else if(msg1==GETCON)
