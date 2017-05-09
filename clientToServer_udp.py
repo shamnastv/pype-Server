@@ -22,7 +22,9 @@ class Server():
 	def recv(self):
                 try:
 		        msg = self.s.recv(maxsize)
-			return msg
+                        if msg != None :
+                                return msg
+                        return self.recv()
 		except socket.error, msg:
 	       		print 'Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
 
