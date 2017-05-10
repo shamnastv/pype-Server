@@ -16,7 +16,7 @@ if __name__ == '__main__' :
         if op1 == 1 :
             serv=Server()
 	    while (1) :
-                print '1. get my address\n2. get first peer\n3. poll\n4. getconnectiOn\n.5 exit'
+                print '1. get my address\n2. get first peer\n3. poll\n4. getconnection\n5. exit'
                 op = input('Enter option : ')
                 print '\nServer reply'
 	        if op == 1:
@@ -24,7 +24,7 @@ if __name__ == '__main__' :
                 elif op == 2 :
                     print serv.getpeer()
                 elif op == 3 :
-                    print serv.poll
+                    print serv.poll()
                 elif op == 4:
                     address = raw_input('enter address : ')
                     print serv.getcon(address)

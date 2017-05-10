@@ -23,10 +23,10 @@ class Client() :
 
 	def tupleToString(self, taddr):
 		ip, port = taddr
-		return ip+':'+str(port)	
+		return ip+'+'+str(port)	
 
 	def stringToTuple(self,addr):
-		ip, port = addr.split(':')
+		ip, port = addr.split('+')
 		return ip, int(port)
 	
 	def send(self,msg):
@@ -58,7 +58,7 @@ class Client() :
 			try :
 				data = self.s.recv(maxsize)
 			except :
-                                time.wait(waiting_time)
+                                time.sleep(waiting_time)
 				continue
 			if data == 'punch' :
 				print 'received punch\n'

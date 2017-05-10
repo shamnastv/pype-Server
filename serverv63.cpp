@@ -14,7 +14,7 @@
 #include<sstream>
 
 #define MAX 50
-#define MAX_PEERS 2
+#define MAX_PEERS 3
 
 #define GETADDR "getaddr"
 #define GETPEER "getpeer"
@@ -129,6 +129,7 @@ void poll(sockaddr_storage clien_addr)
   s1 += END;
   if((n=sendto(sockfd,s1.c_str(),s1.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
     perror("sending error");
+  addtopeers(s);
   cout<<"Sent "<<s1<<" to "<<s<<endl;
 }
 
@@ -141,7 +142,8 @@ void getcon(sockaddr_storage clien_addr, string addr)
   duties[addr].push_back(s);
   buffer=END;
   if((n=sendto(sockfd,buffer.c_str(),buffer.length(),0,(sockaddr *)&clien_addr,sizeof(clien_addr)))<0)
-    perror("sending error");  
+    perror("sending error");
+  addtopeers(s);
 }
 
 int main(int argc,char* argv[])
